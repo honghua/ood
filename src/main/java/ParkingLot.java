@@ -1,16 +1,38 @@
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ParkingLot {
-    private final Level[] levels;
-    public ParkingLot(int numLevels, int numSpotsPerLevel) {
-        levels = new Level[numLevels];
-        for (int i = 0; i < numLevels; i++) {
-            levels[i] = new Level(numSpotsPerLevel);
+    private final List<Level> levels;
+    private final List<ParkingTicket> activeTickets; // → persist to disc
+
+    private ParkingLot(int numOfLevels, int numSpotsPerLevel) {
+        levels = new ArrayList<>();
+        for (int i = 0; i < numOfLevels; i++) {
+            levels.add(new Level(numSpotsPerLevel));
         }
+        activeTickets = new ArrayList<>();
     }
-    public boolean hasSpot(Vehicle v) {
+    private static ParkingLot INSTANCE = null;
+    public static ParkingLot getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ParkingLot(2, 50);
+        }
+        return INSTANCE;
+    }
+
+    public ParkingTicket getNewParkingTicket(Vehicle v) throws ParkingFullException {
+        if (v == null) return null;
+        if (!this.hasSpot(v)) {
+            throw new ParkingFullException("Lot is full");
+        }
+        ParkingTicket ticket = new ParkingTicket(activeTickets.size());
+        v.assignParkingTicket(ticket);
+        return ticket;
+    }
+
+    private boolean hasSpot(Vehicle v) {
         for (Level l : levels) {
             if (l.hasSpot(v)) {
                 return true;
@@ -18,7 +40,9 @@ public class ParkingLot {
         }
         return false;
     }
+
     public boolean park(Vehicle v) {
+        if (v == null) return false;
         for (Level l: levels) {
             if (l.park(v)) {
                 return true;
@@ -26,13 +50,19 @@ public class ParkingLot {
         }
         return false;
     }
+
     public boolean leave(Vehicle v) {
+        if (v == null) return false;
         for (Level l : levels) {
             if (l.leave(v)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public BigDecimal pay(ParkingTicket ticket) {
+        return ticket.getRate();
     }
 }
 
@@ -76,6 +106,7 @@ class Level {
         return false;
     }
 }
+
 class ParkingSpot {
     private final VehicleSize size;
     private Vehicle currentVehicle;
@@ -85,7 +116,7 @@ class ParkingSpot {
     }
 
     boolean fit(Vehicle v) {
-        return currentVehicle == null && size.getSize() >= v.getSize().getSize();
+        return currentVehicle == null && v.getSize().compareSize(size) == -1;
     }
     void park(Vehicle v) {
         currentVehicle = v;

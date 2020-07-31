@@ -10,4 +10,7 @@ public enum VehicleSize {
     public int getSize() {
         return size;
     }
+    public int compareSize(VehicleSize vs) {
+        return size <= vs.getSize() ? -1 : 1;
+    }
 }
