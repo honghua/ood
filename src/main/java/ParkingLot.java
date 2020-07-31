@@ -7,7 +7,7 @@ public class ParkingLot {
     private final List<Level> levels;
     private final List<ParkingTicket> activeTickets; // → persist to disc
 
-    private ParkingLot(int numOfLevels, int numSpotsPerLevel) {
+    public ParkingLot(int numOfLevels, int numSpotsPerLevel) {
         levels = new ArrayList<>();
         for (int i = 0; i < numOfLevels; i++) {
             levels.add(new Level(numSpotsPerLevel));
@@ -32,7 +32,7 @@ public class ParkingLot {
         return ticket;
     }
 
-    private boolean hasSpot(Vehicle v) {
+    public boolean hasSpot(Vehicle v) {
         for (Level l : levels) {
             if (l.hasSpot(v)) {
                 return true;
