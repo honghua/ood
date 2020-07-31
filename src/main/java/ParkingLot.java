@@ -1,3 +1,5 @@
+import com.sun.istack.internal.NotNull;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,9 +10,9 @@ public class ParkingLot {
     private final List<ParkingTicket> activeTickets; // → persist to disc
 
     /**
-     *
-     * @param numOfLevels
-     * @param numSpotsPerLevel
+     * Class constructor
+     * @param numOfLevels   the number of levels to be created
+     * @param numSpotsPerLevel the number of parking spots at each level
      */
     public ParkingLot(int numOfLevels, int numSpotsPerLevel) {
         levels = new ArrayList<>();
@@ -22,11 +24,11 @@ public class ParkingLot {
 
     /**
      *
-     * @param v
-     * @return
-     * @throws ParkingFullException
+     * @param v  vehicle
+     * @return   a ParkingTicket assigned to the vehicle
+     * @throws ParkingFullException exception when parking lot is full
      */
-    public ParkingTicket getNewParkingTicket(Vehicle v) throws ParkingFullException {
+    public ParkingTicket getNewParkingTicket(@NotNull Vehicle v) throws ParkingFullException {
         if (v == null) return null;
         if (!this.hasSpot(v)) {
             throw new ParkingFullException("Lot is full");
@@ -38,10 +40,10 @@ public class ParkingLot {
 
     /**
      *
-     * @param v
-     * @return
+     * @param v vehicle
+     * @return boolean has a spot for the vehicle
      */
-    public boolean hasSpot(Vehicle v) {
+    public boolean hasSpot(@NotNull Vehicle v) {
         for (Level l : levels) {
             if (l.hasSpot(v)) {
                 return true;
@@ -52,10 +54,10 @@ public class ParkingLot {
 
     /**
      *
-     * @param v
-     * @return
+     * @param v vehicle
+     * @return boolean parking is successful
      */
-    public boolean park(Vehicle v) {
+    public boolean park(@NotNull Vehicle v) {
         if (v == null) return false;
         for (Level l: levels) {
             if (l.park(v)) {
@@ -67,10 +69,10 @@ public class ParkingLot {
 
     /**
      *
-     * @param v
-     * @return
+     * @param v vehicle
+     * @return boolean leaving is successful
      */
-    public boolean leave(Vehicle v) {
+    public boolean leave(@NotNull Vehicle v) {
         if (v == null) return false;
         for (Level l : levels) {
             if (l.leave(v)) {
@@ -82,8 +84,8 @@ public class ParkingLot {
 
     /**
      *
-     * @param ticket
-     * @return
+     * @param ticket ticket to pay
+     * @return  amount of money to pay
      */
     public BigDecimal pay(ParkingTicket ticket) {
         return ticket.getRate();
