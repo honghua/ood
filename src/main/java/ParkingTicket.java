@@ -4,31 +4,43 @@ import java.time.temporal.ChronoUnit;
 
 public class ParkingTicket {
     private final String id;
+    private TicketStatus status; // paid, unpaid
     private final static int PARKING_RATE = 5;
     private final LocalDateTime startTime;
     private LocalDateTime checkOutTime;
-    private TicketStatus status; // paid, unpaid
+    private long totalMinutes;
+
     public ParkingTicket(int count) {
         startTime = LocalDateTime.now();
         id = startTime.getHour() + startTime.getMinute() + startTime.getSecond() + String.valueOf(count);
         status = TicketStatus.UNPAID;
     }
     public BigDecimal getRate() {
+//        status = TicketStatus.PAID;
         checkOutTime = LocalDateTime.now();
-        long seconds = startTime.until( checkOutTime, ChronoUnit.SECONDS );
-        return BigDecimal.valueOf(PARKING_RATE * seconds);
+        totalMinutes = startTime.until(checkOutTime, ChronoUnit.MINUTES );
+        return BigDecimal.valueOf(PARKING_RATE * totalMinutes);
     }
 
     @Override
     public String toString() {
-        return "ParkingTicket{" +
-                "id='" + id + '\'' +
-                ", rate=" + getRate() +
-                ", startTime=" + startTime +
-                ", checkOutTime=" + checkOutTime +
-                ", totalTime=" + startTime.until( checkOutTime, ChronoUnit.SECONDS ) +
-                ", status=" + status +
-                '}';
+        if (status == TicketStatus.UNPAID) {
+            return "ParkingTicket{" +
+                    "id='" + id + '\'' +
+                    ", status=" + status +
+                    ", startTime=" + startTime +
+                    '}';
+        } else {
+            getRate();
+            return "ParkingTicket{" +
+                    "id='" + id + '\'' +
+                    ", status=" + status +
+                    ", startTime=" + startTime +
+                    ", checkOutTime=" + checkOutTime +
+                    ", totalTime=" + startTime.until( checkOutTime, ChronoUnit.SECONDS ) +
+                    ", rate=" + getRate() +
+                    '}';
+        }
     }
 }
 

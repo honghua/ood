@@ -7,6 +7,11 @@ public class ParkingLot {
     private final List<Level> levels;
     private final List<ParkingTicket> activeTickets; // → persist to disc
 
+    /**
+     *
+     * @param numOfLevels
+     * @param numSpotsPerLevel
+     */
     public ParkingLot(int numOfLevels, int numSpotsPerLevel) {
         levels = new ArrayList<>();
         for (int i = 0; i < numOfLevels; i++) {
@@ -14,14 +19,13 @@ public class ParkingLot {
         }
         activeTickets = new ArrayList<>();
     }
-    private static ParkingLot INSTANCE = null;
-    public static ParkingLot getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ParkingLot(2, 50);
-        }
-        return INSTANCE;
-    }
 
+    /**
+     *
+     * @param v
+     * @return
+     * @throws ParkingFullException
+     */
     public ParkingTicket getNewParkingTicket(Vehicle v) throws ParkingFullException {
         if (v == null) return null;
         if (!this.hasSpot(v)) {
@@ -32,6 +36,11 @@ public class ParkingLot {
         return ticket;
     }
 
+    /**
+     *
+     * @param v
+     * @return
+     */
     public boolean hasSpot(Vehicle v) {
         for (Level l : levels) {
             if (l.hasSpot(v)) {
@@ -41,6 +50,11 @@ public class ParkingLot {
         return false;
     }
 
+    /**
+     *
+     * @param v
+     * @return
+     */
     public boolean park(Vehicle v) {
         if (v == null) return false;
         for (Level l: levels) {
@@ -51,6 +65,11 @@ public class ParkingLot {
         return false;
     }
 
+    /**
+     *
+     * @param v
+     * @return
+     */
     public boolean leave(Vehicle v) {
         if (v == null) return false;
         for (Level l : levels) {
@@ -61,6 +80,11 @@ public class ParkingLot {
         return false;
     }
 
+    /**
+     *
+     * @param ticket
+     * @return
+     */
     public BigDecimal pay(ParkingTicket ticket) {
         return ticket.getRate();
     }
